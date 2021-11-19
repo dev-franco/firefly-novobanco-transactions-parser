@@ -15,7 +15,7 @@ parser.run();
 fireFlyApi.getLastTransaction().then(
     (response) => {
 
-        let responseTransaction = response.data.data[0].attributes.transactions[0];
+        let responseTransaction = response.data && response.data[0] ? response.data.data[0].attributes.transactions[0] : false;
         if(responseTransaction) {
             let transaction = new Transaction();
             transaction.description = responseTransaction.description;
@@ -32,13 +32,16 @@ fireFlyApi.getLastTransaction().then(
 
             // given a latest transaction found, we will filter out all transactions up until this one
             if(transaction) {
-                // parser.removeTransactionsUpUntil(transaction); // TODO: lets test this better
+                console.log(transaction);
+                parser.removeTransactionsUpUntil(transaction); // TODO: lets test this better
             }
 
             
             // it would then populate with more transactions
             if(parser.transactions) {
-                fireFlyApi.postTransactions(parser.transactions);
+                fireFlyApi.postTransactions(parser.transactions);                
+            } else {
+                console.log('No transactions to import, check latest transaction');
             }
 
 
