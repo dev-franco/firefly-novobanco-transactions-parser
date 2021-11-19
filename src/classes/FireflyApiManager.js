@@ -7,7 +7,7 @@ class FireFlyApiManager {
         jwtToken : "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5IiwianRpIjoiZWZmMzA5ODBlYzM2ODY4OGI4ZjJkM2Y4ZTE0M2I4YTFmNWM4MTA3MmJkNmY4MzM0ZThlNWQyYWUxN2U1NTQyYWE2MWM3YjZjNjZiNmYzZWQiLCJpYXQiOjE2MzY4MjE3OTMuMTA4MzU3LCJuYmYiOjE2MzY4MjE3OTMuMTA4MzY3LCJleHAiOjE2NjgzNTc3OTMuMDMwNzc1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.VC3prT11OadBaKS8rmbih8n2poKLqxWHonnLUWD306V94F9I5OfkszWVjW7H5Jlu5-X5LQr9uyOdAYPcP66XavBj-mVgGOwSd2xkm5QkjkV9Dzj8qLw65WNvXIfPCwfYx9ikCK-BtQoMy85sawpp7Jpzz6EtuZyfm8dAc-Dvhyz9ln13vzomvgTFGvFwITlAOzv6ijOZMXYaV16FWzuhctMdoJ8CI7u7asONPeJ3GUIBliiHWhkwHpgZAzdhZWWUmkfrfFlIrxWr_TZ2TQn6Z6HnA5BSQCBMaHFKVKawl444iiAH14TnwXveJbyu8HXe3upvLnW-o0insHbFiWe8Ahs-f9wIVPxJ7mpx8hWfteJJxU0mIJpvyNhCl3OA6cB9usQNug2aurbRd_s60YhuOpFDFjfYHrtf5ZOTa-82SyLt04mEZwGZUdQnnpJWGUMnFC35BPiovsN5IHyKd3_2RNALssP7gDWpksHVGFdD9cDlynD88mK8W3jTgWjtOIlq04mPaLOPzxNYKIY0BF37eZk8o_tFzb3XB3QhjdDI1DGpYqunOCN_EuZ5jaJ1U24l6sFmuG2U_KSu2yp9ONHRLrCKtqk_fu0xE4Kv_m-0ksGTUqzcWysppAUD_07MfxRpzk-UsR2PqlI6OSFFDB_C0EvHx-bpuPh-ydSR9B0gYDo",
         mainAccountName: "Novo Banco",
         savingsAccountName: "Novo Banco savings account",
-        connectionTimeout: 5 // in seconds
+        connectionTimeout: 10 // in seconds
     }
 
     /**
@@ -163,7 +163,7 @@ class FireFlyApiManager {
      * @param {String} type 
      */
     transactionAmountFromType(transaction, type) {
-        // 
+        
     }
 
     /**
