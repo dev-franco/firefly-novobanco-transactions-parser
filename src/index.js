@@ -2,7 +2,7 @@ let NovoBancoXlsParser = require('./classes/NovoBancoXlsParser.js')
 let FireFlyApiManager = require('./classes/FireFlyApiManager.js')
 let Transaction = require('./classes/Transaction.js')
 
-const parser = new NovoBancoXlsParser('../files/example.xls');
+const parser = new NovoBancoXlsParser('../files/newfile.xls');
 const fireFlyApi = new FireFlyApiManager();
 
 parser.run();
@@ -19,7 +19,7 @@ fireFlyApi.getLastTransaction().then(
         if(responseTransaction) {
             let transaction = new Transaction();
             transaction.description = responseTransaction.description;
-            transaction.date = new Date(responseTransaction.date).getTime();
+            transaction.date = new Date(responseTransaction.date).getTime() / 1000; // transactions will come with ms 
             transaction.type = responseTransaction.type;
 
             if(responseTransaction.type === 'withdrawal') {
