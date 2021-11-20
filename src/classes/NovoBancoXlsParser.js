@@ -59,7 +59,7 @@ class NovoBancoXlsParser {
     removeTransactionsUpUntil = (transaction)  => {
         // TODO: here we may get repeated transactions...then what?
         if(this.transactions && transaction) {
-            this.transactions = this.transactions.filter(t => t.date > transaction.date);
+            this.transactions = this.transactions.filter(t => t.date > transaction.date); // TODO: this creates a problem, where you can't import a file in the same day, but NOVOBANCO does not provide us with proper timestamps
         } else {
             
         }
