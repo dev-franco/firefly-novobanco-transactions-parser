@@ -25,25 +25,30 @@ class FireFlyApiManager {
 
             // we reverse both arrays because since we have no hours on our dates
             // firefly will think 2 records inserted in the same day means their order was 1 => 2; when in reality it's 2 => 1 (later transaction is higher than previous)
-            let fireFlyDebitTransactions = fireFlyTransactions.filter(t => t.type === 'deposit').reverse();
-            let fireFlyWithdrawalTransactions = fireFlyTransactions.filter(t => t.type === 'withdrawal').reverse();
+            let fireFlyDebitTransactions = fireFlyTransactions.filter(t => t.type === 'deposit' && !!t).reverse();
+            let fireFlyWithdrawalTransactions = fireFlyTransactions.filter(t => t.type === 'withdrawal' && !!t).reverse();
 
             // we need 2 payloads, one for each transaction type
-            let depositPayload = {
-                group_title: `firefly-import-deposit-${new Date().getTime()}`,
-                error_if_duplicate_hash: false,
-                apply_rules: false,
-                fire_webhooks: true,
-                transactions: fireFlyDebitTransactions
+            if(fireFlyDebitTransactions) {
+                let depositPayload = {
+                    group_title: `firefly-import-deposit-${new Date().getTime()}`,
+                    error_if_duplicate_hash: false,
+                    apply_rules: false,
+                    fire_webhooks: true,
+                    transactions: fireFlyDebitTransactions
+                }    
             }
+            
 
-            let withdrawalPayload = {
-                group_title: `firefly-import-withdrawal-${new Date().getTime()}`,
-                error_if_duplicate_hash: false,
-                apply_rules: false,
-                fire_webhooks: true,
-                transactions: fireFlyWithdrawalTransactions
-            }
+            if(fireFlyWithdrawalTransactions) {
+                let withdrawalPayload = {
+                    group_title: `firefly-import-withdrawal-${new Date().getTime()}`,
+                    error_if_duplicate_hash: false,
+                    apply_rules: false,
+                    fire_webhooks: true,
+                    transactions: fireFlyWithdrawalTransactions
+                }
+            }            
 
             if(withdrawalPayload) {
                 this.request('/transactions', 'POST', withdrawalPayload).then(
@@ -52,6 +57,7 @@ class FireFlyApiManager {
                     },
                     (error) => {
                         console.log('Error on withdrawal payload:');
+                        console.log(fireFlyWithdrawalTransactions[0])
                         console.log(error.response.data)
                     }
                 );
@@ -64,7 +70,8 @@ class FireFlyApiManager {
                     },
                     (error) => {
                         console.log('Error on deposit payload:');
-                        console.log(error.response.data)
+                        console.log(deposityPayload[0])
+                        console.log(error.response.data);
                     }
                 );
             }
@@ -128,16 +135,6 @@ class FireFlyApiManager {
                     default:
                         throw(`transaction type case not implemented for: ${transactionType}`)
                         break;
-                }
-
-                if(isNaN(transaction.amount)) {
-                    console.log('This got screwd up somewhere');
-                    console.log(transaction);
-                    console.log('Transcription from:')
-                    console.log(t);
-                    console.log('Is deposit?')
-                    console.log((t.credit > 0))
-                    return;
                 }
 
                 return transaction;
