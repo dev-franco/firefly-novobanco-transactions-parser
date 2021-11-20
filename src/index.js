@@ -15,7 +15,7 @@ parser.run();
 fireFlyApi.getLastTransaction().then(
     (response) => {
 
-        let responseTransaction = response.data && response.data.data ? response.data.data[0].attributes.transactions[0] : false;
+        let responseTransaction = response.data && response.data.data && response.data.data[0] && response.data.data[0].attributes ? response.data.data[0].attributes.transactions[0] : false;
         if(responseTransaction) {
             let transaction = new Transaction();
             transaction.description = responseTransaction.description;
