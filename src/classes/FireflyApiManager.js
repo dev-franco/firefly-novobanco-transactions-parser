@@ -17,7 +17,7 @@ class FireFlyApiManager {
      * @param {Transaction[]} transactions 
      */
     postTransactions(transactions) {
-
+        
         if(transactions && transactions.length > 0) {
             // convert our NB transactions to firefly expected format
             // we need to split the transactions into types, other wise
@@ -26,22 +26,35 @@ class FireFlyApiManager {
 
             // we reverse both arrays because since we have no hours on our dates
             // firefly will think 2 records inserted in the same day means their order was 1 => 2; when in reality it's 2 => 1 (later transaction is higher than previous)
-            let fireFlyDebitTransactions = fireFlyTransactions.filter(t => t.type === 'deposit' && !!t).reverse();
-            let fireFlyWithdrawalTransactions = fireFlyTransactions.filter(t => t.type === 'withdrawal' && !!t).reverse();
+            let fireFlyDepositTransactions = fireFlyTransactions.filter(t => t.type === 'deposit' && !!t).reverse() || [];
+            let fireFlyWithdrawalTransactions = fireFlyTransactions.filter(t => t.type === 'withdrawal' && !!t).reverse() || [];
 
             // we need 2 payloads, one for each transaction type
-            if(fireFlyDebitTransactions) {
+            if(fireFlyDepositTransactions && fireFlyDepositTransactions.length > 0) {
                 let depositPayload = {
                     group_title: `firefly-import-deposit-${new Date().getTime()}`,
                     error_if_duplicate_hash: false,
                     apply_rules: false,
                     fire_webhooks: true,
-                    transactions: fireFlyDebitTransactions
-                }    
+                    transactions: fireFlyDepositTransactions
+                }
+
+                if(depositPayload) {
+                    this.request('/transactions', 'POST', depositPayload).then(
+                        () => {
+                            console.log(`Inserted ${depositPayload.transactions.length} transactions of type deposit into Firefly`);
+                        },
+                        (error) => {
+                            console.log('Error on deposit payload:');
+                            console.log(deposityPayload[0])
+                            console.log(error.response.data);
+                        }
+                    );
+                }
             }
             
 
-            if(fireFlyWithdrawalTransactions) {
+            if(fireFlyWithdrawalTransactions && fireFlyWithdrawalTransactions.length > 0) {
                 let withdrawalPayload = {
                     group_title: `firefly-import-withdrawal-${new Date().getTime()}`,
                     error_if_duplicate_hash: false,
@@ -49,33 +62,21 @@ class FireFlyApiManager {
                     fire_webhooks: true,
                     transactions: fireFlyWithdrawalTransactions
                 }
+
+                if(withdrawalPayload) {
+                    this.request('/transactions', 'POST', withdrawalPayload).then(
+                        () => {
+                            console.log(`Inserted ${withdrawalPayload.transactions.length} transactions of type withdrawal into Firefly`);
+                        },
+                        (error) => {
+                            console.log('Error on withdrawal payload:');
+                            console.log(fireFlyWithdrawalTransactions[0])
+                            console.log(error.response.data)
+                        }
+                    );
+                }
             }            
 
-            if(withdrawalPayload) {
-                this.request('/transactions', 'POST', withdrawalPayload).then(
-                    () => {
-                        console.log(`Inserted ${withdrawalPayload.transactions.length} transactions of type withdrawal into Firefly`);
-                    },
-                    (error) => {
-                        console.log('Error on withdrawal payload:');
-                        console.log(fireFlyWithdrawalTransactions[0])
-                        console.log(error.response.data)
-                    }
-                );
-            }
-
-            if(depositPayload) {
-                this.request('/transactions', 'POST', depositPayload).then(
-                    () => {
-                        console.log(`Inserted ${depositPayload.transactions.length} transactions of type deposit into Firefly`);
-                    },
-                    (error) => {
-                        console.log('Error on deposit payload:');
-                        console.log(deposityPayload[0])
-                        console.log(error.response.data);
-                    }
-                );
-            }
         } else {
             console.log('No transactions found to POST')
         }

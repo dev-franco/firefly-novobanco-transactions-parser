@@ -2,7 +2,7 @@ let NovoBancoXlsParser = require('./classes/NovoBancoXlsParser.js')
 let FireFlyApiManager = require('./classes/FireFlyApiManager.js')
 let Transaction = require('./classes/Transaction.js')
 
-const parser = new NovoBancoXlsParser('../files/oldfile.xls');
+const parser = new NovoBancoXlsParser('../files/newerfile.xls');
 const fireFlyApi = new FireFlyApiManager();
 
 parser.run();
