@@ -2,7 +2,7 @@ let NovoBancoXlsParser = require('./classes/NovoBancoXlsParser.js')
 let FireFlyApiManager = require('./classes/FireFlyApiManager.js')
 let Transaction = require('./classes/Transaction.js')
 
-const parser = new NovoBancoXlsParser('../files/newerfile.xls');
+const parser = new NovoBancoXlsParser('../files/20211124.xls');
 const fireFlyApi = new FireFlyApiManager();
 
 parser.run();
@@ -31,8 +31,9 @@ fireFlyApi.getLastTransaction().then(
             }
 
             // given a latest transaction found, we will filter out all transactions up until this one
+            // given NB limitations, we can only remove transactions up to a precision of a day, not hours
             if(transaction) {
-                parser.removeTransactionsUpUntil(transaction); // TODO: lets test this better
+                parser.removeTransactionsUpUntil(transaction);
             }
 
             

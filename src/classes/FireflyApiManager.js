@@ -79,6 +79,7 @@ class FireFlyApiManager {
 
         } else {
             console.log('No transactions found to POST')
+            return false;
         }
 
         
