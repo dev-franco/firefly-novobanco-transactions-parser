@@ -17,8 +17,13 @@ class FireFlyApiManager {
      * @param {Transaction[]} transactions 
      */
     postTransactions(transactions) {
+
+        console.log(transactions);
         
         if(transactions && transactions.length > 0) {
+
+            const promises = [];
+
             // convert our NB transactions to firefly expected format
             // we need to split the transactions into types, other wise
             // we will get a 'All splits must be of the same type' error message
@@ -40,16 +45,18 @@ class FireFlyApiManager {
                 }
 
                 if(depositPayload) {
-                    this.request('/transactions', 'POST', depositPayload).then(
-                        () => {
-                            console.log(`Inserted ${depositPayload.transactions.length} transactions of type deposit into Firefly`);
-                        },
-                        (error) => {
-                            console.log('Error on deposit payload:');
-                            console.log(deposityPayload[0])
-                            console.log(error.response.data);
-                        }
-                    );
+                    const depositPayloadPromise = this.request('/transactions', 'POST', depositPayload)
+                    promises.push(depositPayloadPromise);
+                    // .then(
+                    //     () => {
+                    //         console.log(`Inserted ${depositPayload.transactions.length} transactions of type deposit into Firefly`);
+                    //     },
+                    //     (error) => {
+                    //         console.log('Error on deposit payload:');
+                    //         console.log(deposityPayload[0])
+                    //         console.log(error.response.data);
+                    //     }
+                    // );
                 }
             }
             
@@ -64,21 +71,25 @@ class FireFlyApiManager {
                 }
 
                 if(withdrawalPayload) {
-                    this.request('/transactions', 'POST', withdrawalPayload).then(
-                        () => {
-                            console.log(`Inserted ${withdrawalPayload.transactions.length} transactions of type withdrawal into Firefly`);
-                        },
-                        (error) => {
-                            console.log('Error on withdrawal payload:');
-                            console.log(fireFlyWithdrawalTransactions[0])
-                            console.log(error.response.data)
-                        }
-                    );
+                    const withdrawalPayloadPromise = this.request('/transactions', 'POST', withdrawalPayload)
+                    promises.push(withdrawalPayloadPromise);
+                    // .then(
+                    //     () => {
+                    //         console.log(`Inserted ${withdrawalPayload.transactions.length} transactions of type withdrawal into Firefly`);
+                    //     },
+                    //     (error) => {
+                    //         console.log('Error on withdrawal payload:');
+                    //         console.log(fireFlyWithdrawalTransactions[0])
+                    //         console.log(error.response.data)
+                    //     }
+                    // );
                 }
-            }            
+            }
+            
+            return promises && promises.length > 0 ? promises : false;
 
         } else {
-            console.log('No transactions found to POST')
+            console.log('---- No transactions found to POST')
             return false;
         }
 

@@ -79,7 +79,7 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
                 } else {
                   res.send({
                     status: true,
-                    data: JSON.stringify(parser.transactions)
+                    data: parser.transactions
                   });
                 }
                 
@@ -94,6 +94,8 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
               
               
             } else {
+
+              // if we have no transactions feedback, but still have transactions, let's POST
               if(parser.transactions) {
 
                 const publishedTransactions = fireFlyApi.postTransactions(parser.transactions);
