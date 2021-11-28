@@ -20,7 +20,8 @@ class FireFlyApiManager {
       
         if(transactions && transactions.length > 0) {
 
-            const promises = [];
+            let depositPayloadPromise = new Promise(() => {})
+            let withdrawalPayloadPromise = new Promise(() => {})
 
             // convert our NB transactions to firefly expected format
             // we need to split the transactions into types, other wise
@@ -43,8 +44,7 @@ class FireFlyApiManager {
                 }
 
                 if(depositPayload) {
-                    const depositPayloadPromise = this.request('/transactions', 'POST', depositPayload)
-                    promises.push(depositPayloadPromise);
+                    depositPayloadPromise = this.request('/transactions', 'POST', depositPayload)
                 }
             }
             
@@ -59,15 +59,11 @@ class FireFlyApiManager {
                 }
 
                 if(withdrawalPayload) {
-                    const withdrawalPayloadPromise = this.request('/transactions', 'POST', withdrawalPayload)
-                    promises.push(withdrawalPayloadPromise);
+                    withdrawalPayloadPromise = this.request('/transactions', 'POST', withdrawalPayload)
                 }
             }
             
-            // TODO: this is not correct, because it's returning either [], [x], [y], [x,y] meaning inconsisten results
-            // outside the scope we will never be able to distinguish results from deposit / withdrawal
-            // also: check if we need to have 2 POST requests or just send them all in one go
-            return promises && promises.length > 0 ? Promise.all(promises) : false;
+            return Promise.all([depositPayloadPromise, withdrawalPayloadPromise]);
 
         } else {
             console.log('No transactions found to POST')
@@ -160,15 +156,6 @@ class FireFlyApiManager {
         } else {
             return transaction.type ? types[transaction.type] : null;
         }
-    }
-
-    /**
-     * given a transaction type will return 
-     * @param {Transaction} transaction 
-     * @param {String} type 
-     */
-    transactionAmountFromType(transaction, type) {
-        
     }
 
     /**
