@@ -30,15 +30,11 @@ export class AppComponent {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
 
-          // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
-
-
          const formData = new FormData()
          formData.append('file', file, droppedFile.relativePath)
          this.http.post(`${this.apiUrl}${this.apiEndpoint}`, formData, { responseType: 'json' })
           .subscribe((data: any) => {
-            console.log('Got data from backedn')
+            console.log('Got data from backend')
             console.log(data);
           })
 
