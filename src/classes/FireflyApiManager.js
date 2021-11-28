@@ -4,7 +4,6 @@ class FireFlyApiManager {
 
     settings = {
         apiUrl: "http://192.168.1.200:7000/api/v1",
-        // jwtToken : "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5IiwianRpIjoiZWZmMzA5ODBlYzM2ODY4OGI4ZjJkM2Y4ZTE0M2I4YTFmNWM4MTA3MmJkNmY4MzM0ZThlNWQyYWUxN2U1NTQyYWE2MWM3YjZjNjZiNmYzZWQiLCJpYXQiOjE2MzY4MjE3OTMuMTA4MzU3LCJuYmYiOjE2MzY4MjE3OTMuMTA4MzY3LCJleHAiOjE2NjgzNTc3OTMuMDMwNzc1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.VC3prT11OadBaKS8rmbih8n2poKLqxWHonnLUWD306V94F9I5OfkszWVjW7H5Jlu5-X5LQr9uyOdAYPcP66XavBj-mVgGOwSd2xkm5QkjkV9Dzj8qLw65WNvXIfPCwfYx9ikCK-BtQoMy85sawpp7Jpzz6EtuZyfm8dAc-Dvhyz9ln13vzomvgTFGvFwITlAOzv6ijOZMXYaV16FWzuhctMdoJ8CI7u7asONPeJ3GUIBliiHWhkwHpgZAzdhZWWUmkfrfFlIrxWr_TZ2TQn6Z6HnA5BSQCBMaHFKVKawl444iiAH14TnwXveJbyu8HXe3upvLnW-o0insHbFiWe8Ahs-f9wIVPxJ7mpx8hWfteJJxU0mIJpvyNhCl3OA6cB9usQNug2aurbRd_s60YhuOpFDFjfYHrtf5ZOTa-82SyLt04mEZwGZUdQnnpJWGUMnFC35BPiovsN5IHyKd3_2RNALssP7gDWpksHVGFdD9cDlynD88mK8W3jTgWjtOIlq04mPaLOPzxNYKIY0BF37eZk8o_tFzb3XB3QhjdDI1DGpYqunOCN_EuZ5jaJ1U24l6sFmuG2U_KSu2yp9ONHRLrCKtqk_fu0xE4Kv_m-0ksGTUqzcWysppAUD_07MfxRpzk-UsR2PqlI6OSFFDB_C0EvHx-bpuPh-ydSR9B0gYDo",
         jwtToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiZTk3OGZkZTg2MmVmNjVkZDMyOTkwYjJiYmM1MDIyOWQwNTE2YjkwNTY5NjYwY2M2ZGIyMGYwZjUxMDZiNjk0MDhiYzJjNzVjZjgxZWYxYTYiLCJpYXQiOjE2Mzc0NDc3MjEuMTY4NzY4LCJuYmYiOjE2Mzc0NDc3MjEuMTY4Nzc0LCJleHAiOjE2Njg5ODM3MjEuMTQxMjM2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.BP-IUfvcglxyr9JeKmiWwwQ0-HMTam-mssWaSjdHI6ll8Ig9D3MN-55ADQW5zN8g3ntXKNZ1Ol9BUosDRMfUApmQHGMbzwZIBgzipKygFhzlOzrSLMv4cpfGR3IXWaODgmS_xbKS6FQ3Swu6knWa2wrQ840s1UZZbvXlfcc8hI2jhf5PzsuSdPHk2IxjAngGT9K1NqZHo_HfZ8W4KBjvoyhxgz-aeZKfsxeGsPj4Wm9-Whsj4BVih_8e_dD9Em6zkEwjjT-1D0Wak9txaiS1abv-t1pIs8792iHSIIXAoW5VBg_rP2kTJ7qEC9wvphimtrBo9dFQ3cx3vuEbMZYtfmMxY-Ssm3e6vpOgzo-lX78yI4PXpLsO_mzT1uux8nXfJ9N7Ov1fbyirN_reJOdO4KL2ceTE8EYbnc0ibJhdU76dccl95ypEDvCy2Sq2JDmQq6UK4I_IvpemT0YH9yZw49N0OnJIwETmwNkt643vU1y7NGVFzZ6PtZItRzvytWEqv49QWdjN9ymD5hdLyEu_9jCdLoLZZ_56VvL1e-fuzj8x0MObtEZdnH9NlZT6ic84UABDAksCQ7UGQQzu9khhXROgZJ7oCTIJZ2lQo8m2Q6syyrrc-qT-sTDpoTMUQhTj_p6guf2DlY3FddUjIKUtuAtAVKjIm2H_AUzmrGC8fQE",
         mainAccountName: "Novo Banco",
         savingsAccountName: "Novo Banco savings account",
@@ -29,7 +28,7 @@ class FireFlyApiManager {
             let fireFlyTransactions = this.prepareTransactionsForFirefly(transactions);
 
             // we reverse both arrays because since we have no hours on our dates
-            // firefly will think 2 records inserted in the same day means their order was 1 => 2; when in reality it's 2 => 1 (later transaction is higher than previous)
+            // firefly will think 2 records inserted in the same day means their order was 1 => 2; when in reality it's 2 => 1 (later transaction happened later than previous)
             let fireFlyDepositTransactions = fireFlyTransactions.filter(t => t.type === 'deposit' && !!t).reverse() || [];
             let fireFlyWithdrawalTransactions = fireFlyTransactions.filter(t => t.type === 'withdrawal' && !!t).reverse() || [];
 
