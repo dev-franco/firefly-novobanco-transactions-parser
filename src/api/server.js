@@ -3,13 +3,12 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs')
-
+const app = express()
+const port = 3000
 const NovoBancoXlsParser = require('../classes/NovoBancoXlsParser.js')
 const FireFlyApiManager = require('../classes/FireFlyApiManager.js')
 const Transaction = require('../classes/Transaction.js')
 
-const app = express()
-const port = 3000
 
 // enable files upload
 app.use(fileUpload({
@@ -19,7 +18,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-
+// setup post route
 app.post('/firefly/sync/novobanco', async (req, res) => {
   
   try {
@@ -36,7 +35,7 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
         }
         
         res.setHeader('Content-type', 'application/json')
-
+        
         // load up the parser with the generated file
         const parser = new NovoBancoXlsParser('files/file.xls');
         const fireFlyApi = new FireFlyApiManager();
@@ -67,55 +66,46 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
                 parser.removeTransactionsUpUntil(transaction);
               }
               
-              
-              // it would then populate with more transactions
-              if(parser.transactions) {
-                const publishedTransactions = fireFlyApi.postTransactions(parser.transactions);
-                if(!publishedTransactions) {
-                  res.send({
-                    status: false,
-                    message: 'No new transactions found to POST'
-                  })
-                } else {
-                  res.send({
-                    status: true,
-                    data: parser.transactions
-                  });
-                }
-                
-              } else {
-                res.send({
-                  status: false,
-                  message: 'No transactions to import, check latest transaction'
-                })
-              }
-              
-              
-              
-              
-            } else {
-
-              // if we have no transactions feedback, but still have transactions, let's POST
-              if(parser.transactions) {
-
-                const publishedTransactions = fireFlyApi.postTransactions(parser.transactions);
-                if(!publishedTransactions) {
-                  res.send({
-                    status: false,
-                    message: 'No new transactions found to POST'
-                  })
-
-                } else {
-                  res.send({
-                    status: true,
-                    data: JSON.stringify(parser.transactions)
-                  })
-                }                
-              }
             }
             
-          }
-          );
+            // proceed to post transactions - if an old transaction was found, it was already removed before
+            if(parser.transactions) {
+              const publishedTransactions = fireFlyApi.postTransactions(parser.transactions);
+              if(!publishedTransactions) {
+                
+                res.send({
+                  status: false,
+                  message: 'No new transactions found to POST'
+                })
+              } else {
+                
+                // after both transactions complete, system is ready to output summary
+                publishedTransactions.then((transactions) => {
+
+                  const deposit = transactions[0];
+                  const withdrawal = transactions[1];
+                  const totalDeposit = deposit.data.data.attributes.transactions ? deposit.data.data.attributes.transactions.length : 0;
+                  const totalWithdrawal = withdrawal.data.data.attributes.transactions ? withdrawal.data.data.attributes.transactions.length : 0;
+
+                  res.send({
+                    status: true,
+                    data: parser.transactions,
+                    totals : {
+                      deposit: totalDeposit,
+                      withdrawal: totalWithdrawal
+                    }
+                  });
+                })                
+              }
+              
+            } else {
+              res.send({
+                status: false,
+                message: 'No transactions to import, check latest transaction'
+              })
+            }
+            
+          });
           
           
           
@@ -128,8 +118,6 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
           }
         }); 
         
-        
-        // res.send('Processing!');
       }
       
     } catch(e) {

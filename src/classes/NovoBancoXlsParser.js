@@ -16,6 +16,8 @@ class NovoBancoXlsParser {
         }
     }
 
+
+    // parses the transactions from the xls file and converts them to firefly expected transaction format
     run = () => {
 
         let xlsx = require('node-xlsx').default;
