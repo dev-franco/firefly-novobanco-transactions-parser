@@ -2,24 +2,24 @@
 
   <div class="card">
 
-    <div class="card-title">Upload your files</div>
+    <div class="card-title">Upload the transaction file</div>
     <div class="card-subtitle">Accepted format: .xls</div>
 
-    <!--div class="card-upload-area"-->
-
-      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
-      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
-          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)">
+          <ng-template ngx-file-drop-content-tmp>
             <img src="/assets/img/folder.png" />
-            <span>Drag & Drop your files here</span>
+            <span>Drag & Drop the file here</span>
           </ng-template>
       </ngx-file-drop>
 
-    <!--/div-->
+      <div class="text-center">
+        <div class="upload-feedback" *ngIf="response">
+          <span class="neutral" *ngIf="response?.status === false && response.message">{{response.message}}</span>
+          <span class="success" *ngIf="response.status">Inserted a total of {{response?.totalInsertedTransactions?.deposit}} deposit transactions and {{response?.totalInsertedTransactions?.withdrawal}} withdrawal transactions.</span>
+        </div>
 
-    <div class="upload-feedback">
-      <span>Uploaded files</span>
-    </div>
+        <div *ngIf="isLoading" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+      </div>
 
   </div>
 

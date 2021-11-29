@@ -9,11 +9,19 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
 
-
   title = 'frontend';
   apiUrl = 'http://localhost:3000';
   apiEndpoint = '/firefly/sync/novobanco'
   http: HttpClient
+  isLoading = false;
+  response?: {
+    status: boolean,
+    message: string,
+    totalInsertedTransactions?: {
+      deposit: number,
+      withdrawal: number
+    }
+  }
 
   constructor(http: HttpClient) {
    this.http = http;
@@ -32,10 +40,35 @@ export class AppComponent {
 
          const formData = new FormData()
          formData.append('file', file, droppedFile.relativePath)
+
+         this.isLoading = true;
          this.http.post(`${this.apiUrl}${this.apiEndpoint}`, formData, { responseType: 'json' })
           .subscribe((data: any) => {
+            this.isLoading = false;
+
+            // no transactions found to post
+            if(data.status === false) {
+              this.response = {
+                status: data.status,
+                message: data.message
+              };
+            } else if (data.status === true) {
+              this.response = {
+                status: data.status,
+                message: data.message,
+                totalInsertedTransactions: {
+                  deposit: data.totals.deposit,
+                  withdrawal: data.totals.withdrawal
+                }
+              }
+            }
+
             console.log('Got data from backend')
             console.log(data);
+          }, (error: any) => {
+            console.log(error);
+          }, () =>{
+
           })
 
         });
@@ -45,14 +78,6 @@ export class AppComponent {
         console.log(droppedFile.relativePath, fileEntry);
       }
     }
-  }
-
-  public fileOver(event: any){
-    console.log(event);
-  }
-
-  public fileLeave(event: any){
-    console.log(event);
   }
 
 }
