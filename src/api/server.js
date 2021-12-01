@@ -8,6 +8,7 @@ const port = 3000
 const NovoBancoXlsParser = require('../classes/NovoBancoXlsParser.js')
 const FireFlyApiManager = require('../classes/FireFlyApiManager.js')
 const Transaction = require('../classes/Transaction.js')
+const fireFlyApi = new FireFlyApiManager();
 
 
 // enable files upload
@@ -38,7 +39,7 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
         
         // load up the parser with the generated file
         const parser = new NovoBancoXlsParser('files/file.xls');
-        const fireFlyApi = new FireFlyApiManager();
+        // const fireFlyApi = new FireFlyApiManager();
         parser.run()
         
         // begin communicating with firefly api
@@ -126,8 +127,33 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
       res.send('Failed');
     }
     
-  })
-  
-  app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-  })
+})
+
+
+app.get('/firefly/last_transaction', async (req, res) => {
+  // const fireFlyApi = new FireFlyApiManager();
+  fireFlyApi.getLastTransaction().then(response => {
+    let responseTransaction = response.data && response.data.data && response.data.data[0] && response.data.data[0].attributes ? response.data.data[0].attributes.transactions[0] : false;
+    if(responseTransaction) {
+      let transaction = new Transaction();
+      transaction.description = responseTransaction.description;
+      transaction.date = new Date(responseTransaction.date).getTime() / 1000; // transactions will come with ms 
+      transaction.type = responseTransaction.type;
+      
+      if(responseTransaction.type === 'withdrawal') {
+        transaction.debit = parseFloat(responseTransaction.amount);
+        transaction.credit = 0;
+      } else if(responseTransaction.type === 'deposit') {
+        transaction.credit = parseFloat(responseTransaction.amount);
+        transaction.debit = 0;
+      }
+
+      res.setHeader('Content-type', 'application/json');
+      res.send(JSON.stringify(transaction));
+    }
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`)
+})

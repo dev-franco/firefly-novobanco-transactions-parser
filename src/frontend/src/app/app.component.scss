@@ -16,6 +16,7 @@ $color-grey: #999999;
   background-color: rgb(243, 246, 253);
 
   .card {
+    max-width: 30vw;
     border-radius: 25px;
     background-color: #ffffff;
     padding: 50px;
@@ -31,9 +32,70 @@ $color-grey: #999999;
       text-align: center;
       color: $color-grey;
     }
+    .last-transaction{
+
+      .last-transacton-heading{
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin: 0 0 15px 0;
+        color: #616161;
+      }
+      .last-transacton-description{
+        display: block;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #616161;
+      }
+
+      hr {
+        height: 1px;
+        border: none;
+        background-color: #f0f0f0;
+        margin: 25px 0;
+      }
+
+      table {
+        width: 100%;
+        border-spacing: 0;
+        border: 1px solid #f0f0f0;
+        border-radius: 3px;
+        th, td {
+          text-align: left;
+          padding: 10px;
+          vertical-align: middle;
+        }
+        th{
+          font-size: 0.80rem;
+          background-color: rgba(0,0,0,.02);
+          color: #5c6b77;
+        }
+        td {
+          font-size: 0.75rem;
+
+          span.transaction-type{
+            display: block;
+            text-align: center;
+            font-size: 2rem;
+
+            &.transaction-type-withdrawal {
+              color: #b71c1c;
+            }
+            &.transaction-type-deposit {
+              color: #8bc34a;
+            }
+            &.transaction-type-transfer {
+              color: #ff9800;
+            }
+          }
+        }
+      }
+    }
   }
 
   .upload-feedback{
+    margin: 15px 0;
     span {
       color: $color-grey;
       display: block;

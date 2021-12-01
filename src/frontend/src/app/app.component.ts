@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { HttpClient } from '@angular/common/http';
+import { Transaction } from './modules/api/models/transaction';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title = 'frontend';
   apiUrl = 'http://localhost:3000';
@@ -23,8 +24,21 @@ export class AppComponent {
     }
   }
 
+  lastTransaction!: Transaction;
+
   constructor(http: HttpClient) {
    this.http = http;
+  }
+
+  ngOnInit(): void {
+    this.http.get(`${this.apiUrl}/firefly/last_transaction`).subscribe(
+      (response: any) => {
+        const transaction = new Transaction().deserialize(response);
+        if(transaction) {
+          this.lastTransaction = transaction;
+        }
+      }
+    )
   }
 
   public files: NgxFileDropEntry[] = [];

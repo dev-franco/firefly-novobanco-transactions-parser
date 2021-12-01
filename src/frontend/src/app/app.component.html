@@ -21,6 +21,36 @@
         <div *ngIf="isLoading" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
       </div>
 
+      <ng-container *ngIf="lastTransaction">
+        <div class="text-center last-transaction">
+
+          <span class="last-transacton-heading">Last transaction found</span>
+          <span class="last-transacton-description">The last transaction within Firefly API is described below. To ensure transaction consistency, please make sure the new file either includes this transaction, or its first transaction happens right after the one:</span>
+
+          <hr />
+
+          <table>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Type</th>
+            </tr>
+            <tr>
+              <td>{{lastTransaction.date | date:'d/M/Y'}}</td>
+              <td>{{lastTransaction.description}}</td>
+              <ng-container [ngSwitch]="lastTransaction.type">
+                <td>
+                  <span class="transaction-type transaction-type-withdrawal" *ngSwitchCase="'withdrawal'">-</span>
+                  <span class="transaction-type transaction-type-deposit" *ngSwitchCase="'deposit'">+</span>
+                  <span class="transaction-type transaction-type-transfer" *ngSwitchCase="'transfer'">&lt;=&gt;</span>
+                </td>
+              </ng-container>
+            </tr>
+          </table>
+        </div>
+      </ng-container>
+
+
   </div>
 
 </div>
