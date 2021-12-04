@@ -10,5 +10,6 @@ The project is divided into 2 projects:
 
 An .env file within the /src/api/ folder is available to define required variables so the parser knows where and how to push information to.
 
-## Notes
-Transfers are not yet supported and will be parsed as either deposit or withdrawal based on the amounts
+## Notes & Limitations
+- Transfers are not yet supported and will be parsed as either deposit or withdrawal based on the amounts
+- Timestamps for transactions are only day precise; this is due to the currently exported Novo Banco file only containing dates and no HH:mm information
