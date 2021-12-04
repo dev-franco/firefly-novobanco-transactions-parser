@@ -1,12 +1,13 @@
+require('dotenv').config()
 const Transaction = require('./Transaction');
 
 class FireFlyApiManager {
 
     settings = {
-        apiUrl: "http://192.168.1.200:7000/api/v1",
-        jwtToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiZTk3OGZkZTg2MmVmNjVkZDMyOTkwYjJiYmM1MDIyOWQwNTE2YjkwNTY5NjYwY2M2ZGIyMGYwZjUxMDZiNjk0MDhiYzJjNzVjZjgxZWYxYTYiLCJpYXQiOjE2Mzc0NDc3MjEuMTY4NzY4LCJuYmYiOjE2Mzc0NDc3MjEuMTY4Nzc0LCJleHAiOjE2Njg5ODM3MjEuMTQxMjM2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.BP-IUfvcglxyr9JeKmiWwwQ0-HMTam-mssWaSjdHI6ll8Ig9D3MN-55ADQW5zN8g3ntXKNZ1Ol9BUosDRMfUApmQHGMbzwZIBgzipKygFhzlOzrSLMv4cpfGR3IXWaODgmS_xbKS6FQ3Swu6knWa2wrQ840s1UZZbvXlfcc8hI2jhf5PzsuSdPHk2IxjAngGT9K1NqZHo_HfZ8W4KBjvoyhxgz-aeZKfsxeGsPj4Wm9-Whsj4BVih_8e_dD9Em6zkEwjjT-1D0Wak9txaiS1abv-t1pIs8792iHSIIXAoW5VBg_rP2kTJ7qEC9wvphimtrBo9dFQ3cx3vuEbMZYtfmMxY-Ssm3e6vpOgzo-lX78yI4PXpLsO_mzT1uux8nXfJ9N7Ov1fbyirN_reJOdO4KL2ceTE8EYbnc0ibJhdU76dccl95ypEDvCy2Sq2JDmQq6UK4I_IvpemT0YH9yZw49N0OnJIwETmwNkt643vU1y7NGVFzZ6PtZItRzvytWEqv49QWdjN9ymD5hdLyEu_9jCdLoLZZ_56VvL1e-fuzj8x0MObtEZdnH9NlZT6ic84UABDAksCQ7UGQQzu9khhXROgZJ7oCTIJZ2lQo8m2Q6syyrrc-qT-sTDpoTMUQhTj_p6guf2DlY3FddUjIKUtuAtAVKjIm2H_AUzmrGC8fQE",
-        mainAccountName: "Novo Banco",
-        connectionTimeout: 20 // in seconds
+        apiUrl: process.env.FF_API_URL,
+        jwtToken: process.env.FF_API_TOKEN,
+        mainAccountName: process.env.FF_MAIN_ACCOUNT_NAME,
+        connectionTimeout: process.env.REQ_CONNECTION_TIMEOUT
     }
 
     /**

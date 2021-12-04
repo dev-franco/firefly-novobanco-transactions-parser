@@ -33,7 +33,7 @@ class NovoBancoXlsParser {
             sheet.data.forEach(((row, index) => {
                 if(index > this.settings.transactionsStartAtRow) {
 
-                    let date = row[0]; // why? bcus sort
+                    let date = row[0];
                     let type = row[2];
                     let description = row[3];
                     let debit = parseFloat(row[4]);
