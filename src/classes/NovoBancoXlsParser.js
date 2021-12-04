@@ -1,12 +1,12 @@
-
+require('dotenv').config()
 
 class NovoBancoXlsParser {
     transactions = [];
 
     // basic settings
     settings = {
-        filePath : '',
-        transactionsStartAtRow: 9 // in NOVO BANCO the exported .xls contains some information before the actual transactions
+        filePath: '',
+        transactionsStartAtRow: process.env.NB_TRANSACTION_ROW_START // in NOVO BANCO the exported .xls contains some information before the actual transactions
     }
 
     constructor(filePath) {

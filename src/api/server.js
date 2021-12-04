@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
@@ -8,7 +9,7 @@ const FireFlyApiManager = require('../classes/FireFlyApiManager.js')
 const Transaction = require('../classes/Transaction.js')
 
 const app = express()
-const port = 3000
+const port = process.env.SERVER_PORT
 const fireFlyApi = new FireFlyApiManager();
 
 
@@ -31,6 +32,10 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
       });
     } else {
       // save file to disk
+      // make sure folder exists
+      if(!fs.existsSync('files/')) {
+        fs.mkdirSync('files');
+      }
       fs.writeFile("files/file.xls", req.files.file.data, function(err) {
         if(err) {
           return console.log(err);
