@@ -3,11 +3,12 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs')
-const app = express()
-const port = 3000
 const NovoBancoXlsParser = require('../classes/NovoBancoXlsParser.js')
 const FireFlyApiManager = require('../classes/FireFlyApiManager.js')
 const Transaction = require('../classes/Transaction.js')
+
+const app = express()
+const port = 3000
 const fireFlyApi = new FireFlyApiManager();
 
 
@@ -39,7 +40,6 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
         
         // load up the parser with the generated file
         const parser = new NovoBancoXlsParser('files/file.xls');
-        // const fireFlyApi = new FireFlyApiManager();
         parser.run()
         
         // begin communicating with firefly api
@@ -131,9 +131,15 @@ app.post('/firefly/sync/novobanco', async (req, res) => {
 
 
 app.get('/firefly/last_transaction', async (req, res) => {
-  // const fireFlyApi = new FireFlyApiManager();
+
   fireFlyApi.getLastTransaction().then(response => {
-    let responseTransaction = response.data && response.data.data && response.data.data[0] && response.data.data[0].attributes ? response.data.data[0].attributes.transactions[0] : false;
+    let responseTransaction = response.data && response.data.data && response.data.data[0] && response.data.data[0].attributes ? 
+      response.data.data
+        .sort((a, b) => a.id > b.id ? -1 : false)
+        .filter(t => t.attributes.transactions.find(tr => tr.type !== 'transfer'))
+      [0].attributes.transactions[0] : false;
+
+      
     if(responseTransaction) {
       let transaction = new Transaction();
       transaction.description = responseTransaction.description;
