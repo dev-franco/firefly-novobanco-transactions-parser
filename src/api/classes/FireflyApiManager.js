@@ -1,13 +1,17 @@
 require('dotenv').config()
 const Transaction = require('./Transaction');
 
-class FireFlyApiManager {
+class FireflyApiManager {
 
     settings = {
         apiUrl: process.env.FF_API_URL,
         jwtToken: process.env.FF_API_TOKEN,
         mainAccountName: process.env.FF_MAIN_ACCOUNT_NAME,
         connectionTimeout: process.env.REQ_CONNECTION_TIMEOUT
+    }
+
+    constructor() {
+        console.log(this);
     }
 
     /**
@@ -189,4 +193,4 @@ class FireFlyApiManager {
 }
 
 
-module.exports = FireFlyApiManager
+module.exports = FireflyApiManager
