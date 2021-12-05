@@ -16,6 +16,8 @@ An .env file within the /src/api/ folder is available to define required variabl
 3) Navigate to src/frontend and run: `docker build . -t franco/firefly-novobanco-transactions-parser-frontend`
 4) After both images are built and locally available, navigate to the project root folder and run: `docker-compose up`
 
+* Note: the image names can be changed, however do not forget to update the docker-compose.yml file to pull the correct image names.
+
 
 ## Notes & Limitations
 - Transfers are not yet supported and will be parsed as either deposit or withdrawal based on the amounts
