@@ -10,6 +10,13 @@ The project is divided into 2 projects:
 
 An .env file within the /src/api/ folder is available to define required variables so the parser knows where and how to push information to.
 
+# Building for Docker
+1) Clone the project; we will be building 2 images, one for the API and one for the frontend
+2) Navigate to src/api and run: `docker build . -t franco/firefly-novobanco-transactions-parser-api` - this will build the image and may take some time
+3) Navigate to src/frontend and run: `docker build . -t franco/firefly-novobanco-transactions-parser-frontend`
+4) After both images are built and locally available, navigate to the project root folder and run: `docker-compose up`
+
+
 ## Notes & Limitations
 - Transfers are not yet supported and will be parsed as either deposit or withdrawal based on the amounts
 - Timestamps for transactions are only day precise; this is due to the currently exported Novo Banco file only containing dates and no HH:mm information
