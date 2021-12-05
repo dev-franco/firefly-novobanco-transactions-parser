@@ -1,0 +1,12 @@
+version: "3"
+services:
+  api:
+    restart: always
+    image: "franco/firefly-novobanco-transactions-parser-api"
+    ports:
+      - "3000:3000"
+  frontend:
+    restart: always
+    image: "franco/firefly-novobanco-transactions-parser-frontend"
+    ports:
+    - "4200:4200"
