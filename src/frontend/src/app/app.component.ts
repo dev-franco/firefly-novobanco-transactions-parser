@@ -2,6 +2,7 @@ import { Component, OnInit, } from '@angular/core';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from './modules/api/models/transaction';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import { Transaction } from './modules/api/models/transaction';
 export class AppComponent implements OnInit {
 
   title = 'frontend';
-  apiUrl = 'http://localhost:3000';
+  apiUrl = environment.apiUrl
   apiEndpoint = '/firefly/sync/novobanco'
   http: HttpClient
   isLoading = false;
